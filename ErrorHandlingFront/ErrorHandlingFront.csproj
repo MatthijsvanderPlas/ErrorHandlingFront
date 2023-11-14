@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Mediator.Abstractions" Version="2.1.7" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\ErrorHandlingFront.Application\ErrorHandlingFront.Application.csproj" />
+      <ProjectReference Include="..\ErrorHandlingFront.Infrastructure\ErrorHandlingFront.Infrastructure.csproj" />
+    </ItemGroup>
+
+</Project>
