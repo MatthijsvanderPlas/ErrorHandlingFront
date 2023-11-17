@@ -1,4 +1,5 @@
 using ErrorHandlingFront.Application.Common;
+using ErrorHandlingFront.Application.MessageService;
 using ErrorHandlingFront.Infrastructure.Common;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -6,6 +7,7 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddApplicationFront();
 builder.Services.AddInfrastructureFront();
+builder.Services.AddScoped<MessageService>();
 
 var app = builder.Build();
 

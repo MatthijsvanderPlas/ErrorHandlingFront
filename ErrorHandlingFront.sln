@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ErrorHandlingFront", "ErrorHandlingFront\ErrorHandlingFront.csproj", "{9117254B-C15A-442C-9291-6397D16264C9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ErrorHandlingFront.Website", "ErrorHandlingFront.Website\ErrorHandlingFront.Website.csproj", "{9117254B-C15A-442C-9291-6397D16264C9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ErrorHandlingFront.Application", "ErrorHandlingFront.Application\ErrorHandlingFront.Application.csproj", "{D4833382-919E-4310-8B74-6AABA6655193}"
 EndProject

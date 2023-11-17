@@ -1,0 +1,50 @@
+﻿@page "/SideConsole"
+@using ErrorHandlingFront.Application.MessageService
+<style>
+    .console-box {
+        width: 99%;
+        height: 99%;
+        background-color: #000;
+        color: #fff;
+        overflow: auto;
+        margin: auto;
+    }
+    
+    .btn {
+        width: 150px;
+        height: 25px;
+        background-color: #efefef;
+        color: #000;
+        border: 1px solid #fff;
+        border-radius: 5px;
+    }
+</style>
+<div style="display: flex; flex-direction: column; width: 100%; height: 100%">
+    <div style="display: flex; width: 100%; height: 30px; justify-content: start; 
+    align-items: center; margin-inline: 10px">
+        <button onclick="@(() => Clear())" class="btn">Clear</button>
+    </div>
+    <div class="console-box">
+        @foreach (var message in MessageService.Messages)
+        {
+            <div>@message</div>
+        }
+    </div>
+</div>
+
+@code {
+
+    [Inject]
+    public MessageService MessageService { get; set; }
+    
+    protected override void OnInitialized()
+    {
+        MessageService.OnChange += StateHasChanged;
+    }
+
+    private void Clear()
+    {
+        MessageService.ClearMessages();
+    }
+
+}

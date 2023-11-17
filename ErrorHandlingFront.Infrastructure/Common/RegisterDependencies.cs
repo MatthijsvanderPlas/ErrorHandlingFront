@@ -10,10 +10,10 @@ public static class RegisterDependencies
 {
     public static IServiceCollection AddInfrastructureFront(this IServiceCollection services)
     {
-        services.AddScoped<ITodoService, TodoSerivce>();
+        services.AddScoped<ITodoService, TodoService>();
         
         services.AddRefitClient<ITodoRepository>()
-            .ConfigureHttpClient(c => c.BaseAddress = new Uri("http://localhost:5159"));
+            .ConfigureHttpClient(c => c.BaseAddress = new Uri("http://localhost:7071/api/todos"));
         return services;
     }
 }

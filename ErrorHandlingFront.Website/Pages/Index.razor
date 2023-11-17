@@ -1,0 +1,51 @@
+﻿@page "/"
+@using Mediator
+@using ErrorHandlingFront.Application.Entities
+@using ErrorHandlingFront.Application.Todo.CreateTodo
+@using ErrorHandlingFront.Application.Todo.GetTodos
+<CascadingValue Value="todos">
+
+    <button onclick="@GetTodos">GetTodos</button>
+    <form onsubmit="@(() => Submit())">
+        <input type="text" @bind="@Title" />
+        <button type="submit">Create</button>
+    </form>
+    
+    <div>
+        <ul>
+            @foreach(var todo in todos)
+            {
+                <li>@todo.Title</li>
+            }
+        </ul>
+    </div>
+    
+    <div style="display: flex; position: fixed; top: 0; right: 0; height: 100%; width: 33%; 
+    background-color: GrayText; color: white">
+        <SideConsole>
+
+        </SideConsole>
+    </div>
+
+</CascadingValue>
+
+@code {
+
+    [Inject]
+    public ISender Sender { get; set; }
+
+    public string Title { get; set; }
+    public List<Todo> todos { get; set; } = new List<Todo>();
+
+    private async Task GetTodos()
+    {
+        todos = await Sender.Send(new GetTodosRequest());
+    }
+    
+    async Task Submit()
+    {
+        var request = new CreateTodoRequest(Title);
+        await Sender.Send(new CreateTodoCommand(request));
+    }
+
+}
