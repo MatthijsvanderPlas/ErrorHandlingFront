@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Net;
+using System.Text.Json;
 using Ardalis.Result;
 using ErrorHandlingFront.Application.Entities;
 using ErrorHandlingFront.Application.Interfaces;
@@ -42,18 +43,13 @@ public class TodoService : ITodoService
             if (!result.IsSuccessStatusCode)
             {
                 var res = JsonSerializer.Deserialize<ProblemDetails>(result.Error.Content);
+                _messageService.AddMessage($"{(HttpStatusCode)res.Status}");
                 _messageService.AddMessage(res.Detail);
                 _messageService.AddMessage("Todo creation failed");
                 return Result.Invalid();
             }
-            _messageService.AddMessage("Todo created successfully");
+            _messageService.AddMessage($"Todo: {result.Content.Value} created successfully");
             return result.Content;
-        }
-        catch (ApiException e)
-        {
-            var problemDetails = JsonSerializer.Deserialize<ProblemDetails>(e.Content);
-            _messageService.AddMessage(problemDetails.Detail);
-            return Result.Invalid(new ValidationError(e.Content));
         }
         catch (Exception e)
         {
