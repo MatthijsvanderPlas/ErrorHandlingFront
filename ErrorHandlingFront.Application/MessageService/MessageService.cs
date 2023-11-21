@@ -47,8 +47,7 @@ public class MessageService
     {
         Messages.Add(" > " + message.Title);
         _notificationService.Notify(new NotificationMessage(){Summary = message.Title, Detail = 
-            message.Detail, Severity = 
-            NotificationSeverity.Error, Duration = 5000});
+            message.Detail, Severity = NotificationSeverity.Error, Duration = 5000});
         MessageCount++;
         OnChange.Invoke();
     }
@@ -57,17 +56,16 @@ public class MessageService
     {
         Messages.Add(" > " + message.Title);
         _notificationService.Notify(new NotificationMessage(){Detail = message.Detail, Summary = message
-            .Title, Severity = 
-            NotificationSeverity.Info, Duration = 5000});
+            .Title, Severity = NotificationSeverity.Info, Duration = 5000});
         MessageCount++;
         OnChange.Invoke();
     }
 
-    public void AddInfo(string message)
+    public void AddInfo(string title, string? detail = null)
     {
-        Messages.Add(" > " + message);
-        _notificationService.Notify(new NotificationMessage(){Summary = message, Severity = 
-            NotificationSeverity.Info, Duration = 5000});
+        Messages.Add(" > " + title);
+        _notificationService.Notify(new NotificationMessage(){Summary = title, Detail = 
+            detail, Severity = NotificationSeverity.Info, Duration = 5000});
         MessageCount++;
         OnChange.Invoke();
     }

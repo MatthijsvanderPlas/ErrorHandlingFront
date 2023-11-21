@@ -40,11 +40,9 @@ public class
         }
         else if (response.IsSuccess)
         {
-            var successes = response.Successes;
-            foreach (var success in successes)
-            {
-                _messageService.AddInfo(success.Message);
-            }
+            var firstMessage = response.Successes.First().Message;
+            var secondMessage = response.Successes.Count > 1 ? response.Successes[1].Message : ""; 
+            _messageService.AddInfo(firstMessage, secondMessage);
         }
 
         return response;

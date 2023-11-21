@@ -51,7 +51,9 @@ public class TodoService : ITodoService
                 return Result.Fail(error);
             }
 
-            return Result.Ok(result.Content).WithSuccess("Todo created successfully");
+            return Result.Ok(result.Content)
+                .WithSuccess($"Todo created successfully:")
+                .WithSuccess($"Title: {result.Content.Title}");
         }
         catch (Exception e)
         {
