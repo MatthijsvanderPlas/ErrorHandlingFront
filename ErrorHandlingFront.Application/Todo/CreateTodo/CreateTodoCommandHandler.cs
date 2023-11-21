@@ -1,10 +1,10 @@
-﻿using Ardalis.Result;
-using ErrorHandlingFront.Application.Interfaces;
-using Mediator;
+﻿using ErrorHandlingFront.Application.Interfaces;
+using FluentResults;
+using MediatR;
 
 namespace ErrorHandlingFront.Application.Todo.CreateTodo;
 
-public class CreateTodoCommandHandler : ICommandHandler<CreateTodoCommand, Result<Guid>>
+public class CreateTodoCommandHandler : IRequestHandler<CreateTodoCommand, Result<Entities.Todo>>
 {
     readonly ITodoService _todoService;
 
@@ -13,7 +13,7 @@ public class CreateTodoCommandHandler : ICommandHandler<CreateTodoCommand, Resul
         _todoService = todoService;
     }
 
-    public async ValueTask<Result<Guid>> Handle(CreateTodoCommand command, CancellationToken 
+    public async Task<Result<Entities.Todo>> Handle(CreateTodoCommand command, CancellationToken 
             cancellationToken)
     {
         var todo = new Entities.Todo

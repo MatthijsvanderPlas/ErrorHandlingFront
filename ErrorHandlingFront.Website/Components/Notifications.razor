@@ -1,0 +1,53 @@
+﻿@using Radzen
+@using Radzen.Blazor
+@using ErrorHandlingFront.Application.MessageService
+@inject NotificationService NotificationService
+@inject MessageService MessageService
+
+<button style="background: none; border: 0; cursor: pointer; position: relative;" onclick="@Click">
+    <RadzenStack Style="position: absolute; top: 40px; right: 20px; background-color: white;" 
+    Visible="expandNotificationMenu">
+        <RadzenCard>
+            @foreach(var message in LastFourMessages)
+            {
+                <p style="width: max-content">@message</p>
+            }
+        </RadzenCard>
+    </RadzenStack>
+    <RadzenBadge Variant="Variant.Outlined">
+        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Style="position: relative">
+            <RadzenIcon Icon="notifications" IconColor="white"/>
+            @if (MessageService.MessageCount > 0)
+            {
+                <div style="position: absolute; top: -5px; left: 18px; color: white; 
+                background-color: red; border-radius: 2px; padding-block: 1px; padding-inline: 3px; 
+                font-weight: bold;">
+                    @(MessageService.MessageCount.ToString())
+                </div>
+            }
+
+        </RadzenStack>
+    </RadzenBadge>
+</button>
+<RadzenLabel Style="padding-right: 10px;">Matthijs van der Plas</RadzenLabel>
+
+@code {
+
+    private bool expandNotificationMenu = false;
+    
+    private List<string> LastFourMessages => MessageService.Messages.TakeLast(4).ToList();
+
+    protected override void OnInitialized()
+    {
+        MessageService.OnChange += StateHasChanged;
+        base.OnInitialized();
+    }
+
+    public void Click()
+    {
+        expandNotificationMenu = !expandNotificationMenu;
+        MessageService.ResetCount();
+        StateHasChanged();
+    }
+
+}

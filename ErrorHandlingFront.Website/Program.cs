@@ -1,6 +1,8 @@
 using ErrorHandlingFront.Application.Common;
+using ErrorHandlingFront.Application.Common.Composers;
 using ErrorHandlingFront.Application.MessageService;
 using ErrorHandlingFront.Infrastructure.Common;
+using Radzen;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
@@ -8,6 +10,8 @@ builder.Services.AddServerSideBlazor();
 builder.Services.AddApplicationFront();
 builder.Services.AddInfrastructureFront();
 builder.Services.AddScoped<MessageService>();
+
+builder.Services.AddRadzenComponents();
 
 var app = builder.Build();
 

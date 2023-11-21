@@ -1,3 +1,39 @@
 ﻿@inherits LayoutComponentBase
+@using ErrorHandlingFront.Website.Components
 
-<main> @Body </main>
+<RadzenComponents/>
+
+<RadzenLayout>
+    <RadzenHeader Style="min-height: 50px">
+        <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween">
+            <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center">
+                <RadzenSidebarToggle Click="@(() => sidebarExpanded = !sidebarExpanded)"/>
+                <RadzenLabel Text="Header"/>
+            </RadzenStack>
+            <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center">
+                <Notifications/>
+            </RadzenStack>
+        </RadzenStack>
+    </RadzenHeader>
+    <RadzenSidebar bind-Expanded="@sidebarExpanded" Style="width: max-content; padding-block: 10px">
+        <RadzenPanelMenu DisplayStyle="@(sidebarExpanded ? MenuItemDisplayStyle.IconAndText : MenuItemDisplayStyle.Icon)" ShowArrow="false">
+            <RadzenPanelMenuItem Style="padding-inline: 15px;" Text="Overview" Icon="home"/>
+            <RadzenPanelMenuItem Style="padding-inline: 15px;" Text="Console" Icon="dashboard"/>
+            <RadzenPanelMenuItem Style="padding-inline: 15px;" Text="Users" Icon="people">
+                <RadzenPanelMenuItem Style="padding-inline: 15px;" Text="Add new" Icon="add"/>
+                <RadzenPanelMenuItem Style="padding-inline: 15px;" Text="Search" Icon="search"/>
+            </RadzenPanelMenuItem>
+        </RadzenPanelMenu>
+    </RadzenSidebar>
+    <RadzenBody Style="overflow: hidden">
+        <div class="content">
+            @Body
+        </div>
+    </RadzenBody>
+</RadzenLayout>
+
+@code {
+
+    public bool sidebarExpanded { get; set; } = true;
+
+}

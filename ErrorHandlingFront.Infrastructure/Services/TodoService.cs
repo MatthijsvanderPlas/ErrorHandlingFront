@@ -1,60 +1,83 @@
-﻿using System.Net;
-using System.Text.Json;
-using Ardalis.Result;
+﻿using System.Text.Json;
 using ErrorHandlingFront.Application.Entities;
 using ErrorHandlingFront.Application.Interfaces;
-using ErrorHandlingFront.Application.MessageService;
+using ErrorHandlingFront.Infrastructure.Common.Extensions;
 using ErrorHandlingFront.Infrastructure.Persistence.Repositories;
-using Refit;
+using FluentResults;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ErrorHandlingFront.Infrastructure.Services;
 
 public class TodoService : ITodoService
 {
+    const string ProblemDetailsKey = "details";
     readonly ITodoRepository _todoRepository;
-    readonly MessageService _messageService;
 
-    public TodoService(ITodoRepository todoRepository, MessageService messageService)
+    public TodoService(ITodoRepository todoRepository)
     {
         _todoRepository = todoRepository;
-        _messageService = messageService;
     }
 
-    public async Task<List<Todo>> GetTodos()
+    public async Task<Result<List<Todo>>> GetTodos()
     {
         try
         {
             var todos = await _todoRepository.GetTodos();
-            _messageService.AddMessage("Todos retrieved successfully");
-            return todos;
+            if (!todos.IsSuccessStatusCode)
+            {
+                var problemDetails = JsonSerializer.Deserialize<ProblemDetails>(todos.Error.Content);
+                var error = new Error(problemDetails.Title).WithMetadata(ProblemDetailsKey, problemDetails);
+                return Result.Fail(error);
+            }
+
+            return Result.Ok(todos.Content).WithSuccess("Todos retrieved successfully");
         }
-        catch (ApiException e)
+        catch (Exception e)
         {
-            _messageService.AddMessage(e.Content);
-            return new List<Todo>();
+            var error = new Error(e.Message).WithMetadata(ProblemDetailsKey, e.ToProblemDetails());
+            return Result.Fail(error);
         }
     }
-    
-    public async Task<Result<Guid>> Create(Todo todo)
+
+    public async Task<Result<Todo>> Create(Todo todo)
     {
         try
         {
             var result = await _todoRepository.Create(todo.Title);
             if (!result.IsSuccessStatusCode)
             {
-                var res = JsonSerializer.Deserialize<ProblemDetails>(result.Error.Content);
-                _messageService.AddMessage($"{(HttpStatusCode)res.Status}");
-                _messageService.AddMessage(res.Detail);
-                _messageService.AddMessage("Todo creation failed");
-                return Result.Invalid();
+                var problemDetails = JsonSerializer.Deserialize<ProblemDetails>(result.Error.Content);
+                var error = new Error(problemDetails.Title).WithMetadata(ProblemDetailsKey, problemDetails);
+                return Result.Fail(error);
             }
-            _messageService.AddMessage($"Todo: {result.Content.Value} created successfully");
-            return result.Content;
+
+            return Result.Ok(result.Content).WithSuccess("Todo created successfully");
         }
         catch (Exception e)
         {
-            _messageService.AddMessage(e.Message);
-            return Result.Invalid(new ValidationError(e.Message));
+            var error = new Error(e.Message).WithMetadata(ProblemDetailsKey, e.ToProblemDetails());
+            return Result.Fail(error);
+        }
+    }
+
+    public async Task<Result> DeleteTodoAsync(Guid requestId)
+    {
+        try
+        {
+            var result = await _todoRepository.Delete(requestId.ToString());
+            if (!result.IsSuccessStatusCode)
+            {
+                var problemDetails = JsonSerializer.Deserialize<ProblemDetails>(result.Error.Content);
+                var error = new Error(problemDetails.Title).WithMetadata("details", problemDetails);
+                return Result.Fail(error);
+            }
+
+            return Result.Ok().WithSuccess($"Todo with id {requestId} deleted successfully");
+        }
+        catch (Exception e)
+        {
+            var error = new Error(e.Message).WithMetadata(ProblemDetailsKey, e.ToProblemDetails());
+            return Result.Fail(error);
         }
     }
 }

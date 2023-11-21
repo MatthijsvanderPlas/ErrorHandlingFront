@@ -10,9 +10,11 @@
     <meta charset="utf-8"/>
     <base href="~/"/>
     <link href="css/site.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="_content/Radzen.Blazor/css/material-base.css">
+    <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css"> 
     <component type="typeof(HeadOutlet)" render-mode="ServerPrerendered"/>
 </head>
-<body>
+<body style="margin: 0; padding: 0;">
 <component type="typeof(App)" render-mode="ServerPrerendered"/>
 
 <div id="blazor-error-ui">
@@ -27,5 +29,6 @@
 </div>
 
 <script src="_framework/blazor.server.js"></script>
+<script src="_content/Radzen.Blazor/Radzen.Blazor.js"></script>
 </body>
 </html>

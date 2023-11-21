@@ -1,8 +1,11 @@
 ﻿@page "/"
-@using Mediator
+@using MediatR
 @using ErrorHandlingFront.Application.Entities
+@using ErrorHandlingFront.Application.MessageService
 @using ErrorHandlingFront.Application.Todo.CreateTodo
+@using ErrorHandlingFront.Application.Todo.DeleteTodo
 @using ErrorHandlingFront.Application.Todo.GetTodos
+
 <CascadingValue Value="todos">
 
     <button onclick="@GetTodos">GetTodos</button>
@@ -15,12 +18,12 @@
         <ul>
             @foreach(var todo in todos)
             {
-                <li>@todo.Title</li>
+                <li>@todo.Title <button @onclick="@(() => DeleteTodo(todo.Id))">X</button></li>
             }
         </ul>
     </div>
     
-    <div style="display: flex; position: fixed; top: 0; right: 0; height: 100%; width: 33%; 
+    <div style="display: flex; position: fixed; bottom: 0; left: 0; height: 25%; width: 100%; 
     background-color: GrayText; color: white">
         <SideConsole>
 
@@ -33,19 +36,52 @@
 
     [Inject]
     public ISender Sender { get; set; }
+    
+    [Inject]
+    public MessageService MessageService { get; set; }
 
     public string Title { get; set; }
     public List<Todo> todos { get; set; } = new List<Todo>();
 
+    protected override void OnInitialized()
+    {
+        MessageService.OnChange += StateHasChanged;
+        GetTodos();
+        base.OnInitialized();
+    }
+
     private async Task GetTodos()
     {
-        todos = await Sender.Send(new GetTodosRequest());
+        var result = await Sender.Send(new GetTodosRequest());
+        if (result.IsSuccess)
+        {
+            todos = result.Value;
+        }
+        StateHasChanged();
     }
     
     async Task Submit()
     {
         var request = new CreateTodoRequest(Title);
-        await Sender.Send(new CreateTodoCommand(request));
+        var result = await Sender.Send(new CreateTodoCommand(request));
+        if (result.IsSuccess)
+        {
+            Title = "";
+            todos.Add(result.Value);
+            StateHasChanged();
+        }
+    }
+    
+    async Task DeleteTodo(Guid id)
+    {
+        var request = new DeleteTodoRequest(id);
+        var result = await Sender.Send(new DeleteTodoCommand(request));
+        if (result.IsSuccess)
+        {
+            todos = todos.Where(x => x.Id != id).ToList();
+            StateHasChanged();
+        }
+        
     }
 
 }

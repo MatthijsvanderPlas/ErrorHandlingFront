@@ -1,5 +1,5 @@
-﻿using Ardalis.Result;
-using ErrorHandlingFront.Application.Entities;
+﻿using ErrorHandlingFront.Application.Entities;
+using FluentResults;
 using Refit;
 
 namespace ErrorHandlingFront.Infrastructure.Persistence.Repositories;
@@ -8,8 +8,11 @@ namespace ErrorHandlingFront.Infrastructure.Persistence.Repositories;
 public interface ITodoRepository
 {
     [Get("/")]
-    Task<List<Todo>> GetTodos();
+    Task<ApiResponse<List<Todo>>> GetTodos();
 
     [Post("/")]
-    Task<ApiResponse<Result<Guid>>> Create([Query] string title);
+    Task<ApiResponse<Todo>> Create([Query] string title);
+
+    [Delete("/{requestId}")]
+    Task<ApiResponse<Result>> Delete(string requestId);
 }
